@@ -15,10 +15,13 @@ The package is produced using the tooling in the [yugabyte-db-thirdparty](https:
 
 We will refine the above command and make it more straightforward if it turns out that we need to repackage Intel oneAPI often enough.
 
-The release could then be uploaded like so (from a yb-intel-oneapi-package repository directory):
+The release could then be uploaded like so (from a yb-intel-oneapi-package repository directory, if the package is copied there first):
 ```
 cd yb-intel-oneapi-package
-tag=v2024.1-1714789365
+archive_name=$(ls -t yb-intel-oneapi-*.tar.gz | head -1)
+tag=${archive_name#yb-intel-oneapi-}
+tag=${tag%.tar.gz}
+sha256sum "$archive_name" >"$archive_name.sha256"
 hub release create \
   -m "Release $tag" \
   --attach "./yb-intel-oneapi-$tag.tar.gz" \
